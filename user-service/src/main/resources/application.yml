@@ -1,0 +1,36 @@
+spring:
+  application:
+   name : user-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/lumora
+    username: root
+    password: 12345
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+
+  main:
+    allow-circular-references: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: quandmse183805@fpt.edu.vn
+    password: "vvgj totm cpma hozg"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    default-encoding: UTF-8
+
+    thymeleaf:
+      prefix: classpath:/templates/
+      suffix: .html
+      mode: HTML
