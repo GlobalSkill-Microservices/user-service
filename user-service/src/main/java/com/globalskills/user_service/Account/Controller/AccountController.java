@@ -5,7 +5,7 @@ import com.globalskills.user_service.Account.Dto.AccountResponse;
 import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Service.AccountCommandService;
 import com.globalskills.user_service.Account.Service.AccountQueryService;
-import com.globalskills.user_service.Common.BaseResponseAPI;
+import com.globalskills.user_service.Common.Dto.BaseResponseAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

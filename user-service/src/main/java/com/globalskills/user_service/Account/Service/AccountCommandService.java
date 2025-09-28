@@ -9,7 +9,6 @@ import com.globalskills.user_service.Account.Repository.AccountRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.EnumSet;
@@ -25,9 +24,6 @@ public class AccountCommandService {
 
     @Autowired
     AccountRepo accountRepo;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     @Autowired
     AccountQueryService accountQueryService;
@@ -52,7 +48,6 @@ public class AccountCommandService {
         Account account = modelMapper.map(request,Account.class);
         account.setAccountRole(AccountRole.valueOf(accountRole));
         String originPassword = account.getPassword();
-        account.setPassword(passwordEncoder.encode(originPassword));
         account.setIsActive(true);
         accountRepo.save(account);
         return modelMapper.map(account,AccountResponse.class);
@@ -63,7 +58,6 @@ public class AccountCommandService {
         Account oldAccount = accountQueryService.findAccountById(accountId);
         oldAccount.setAccountRole(AccountRole.valueOf(accountRole));
         String newPassword = request.getPassword();
-        oldAccount.setPassword(passwordEncoder.encode(newPassword));
         accountRepo.save(oldAccount);
         return modelMapper.map(oldAccount, AccountResponse.class);
     }

@@ -15,14 +15,18 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginResponse {
     Long id;
+    String username;
+    String password;
     String fullName;
     Date dateOfBirth;
     String phone;
     String email;
     String avatarUrl;
     AccountRole accountRole;
+    String profileCvUrl;
     Boolean isActive;
     Date lastLogin;
 
-    String token;
+    String access_token;
+
 }
