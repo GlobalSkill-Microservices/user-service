@@ -24,6 +24,14 @@ public class AccountQueryService{
         return accountRepo.findByUsername(username).orElseThrow(()-> new AccountException("Account not found",HttpStatus.NOT_FOUND));
     }
 
+    public boolean findAccountByEmailOrUsername(String username,String email){
+        return accountRepo.existsByEmailOrUsername(username, email);
+    }
+
+    public Account findAccountByEmail(String email){
+        return accountRepo.findByEmail(email).orElseThrow(()-> new AccountException("Account not found",HttpStatus.NOT_FOUND));
+    }
+
 
 
     public Account getCurrentUser(HttpServletRequest request){
