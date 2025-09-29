@@ -31,4 +31,18 @@ public class AuthenticationController {
         BaseResponseAPI<LoginResponse> responseAPI = new BaseResponseAPI<>(true,"Register successfully",response,null);
         return ResponseEntity.ok(responseAPI);
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody String email){
+        authenticationService.forgotPassword(email);
+        BaseResponseAPI<?> responseAPI = new BaseResponseAPI<>(true,"Send email forgot password",null,null);
+        return ResponseEntity.ok(responseAPI);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestHeader("X-User-ID") Long id, @RequestBody String password){
+        authenticationService.resetPassword(id, password);
+        BaseResponseAPI<?> responseAPI = new BaseResponseAPI<>(true,"Reset password successfully",null,null);
+        return ResponseEntity.ok(responseAPI);
+    }
 }
