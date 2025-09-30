@@ -33,7 +33,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: quandmse183805@fpt.edu.vn
-    password: vvgj totm cpma hozg
+    password: rovi zpqp qlhv ynva
     properties:
       mail:
         smtp:
