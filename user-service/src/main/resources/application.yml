@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-   name : user-service
+    name: user-service
 
   web:
     cors:
@@ -34,13 +34,13 @@ spring:
     port: 587
     username: quandmse183805@fpt.edu.vn
     password: rovi zpqp qlhv ynva
+    default-encoding: UTF-8
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-    default-encoding: UTF-8
 
   thymeleaf:
     prefix: classpath:/templates/
