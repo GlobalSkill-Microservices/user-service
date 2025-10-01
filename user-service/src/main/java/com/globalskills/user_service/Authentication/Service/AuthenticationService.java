@@ -7,6 +7,7 @@ import com.globalskills.user_service.Account.Exception.AccountException;
 import com.globalskills.user_service.Account.Service.AccountCommandService;
 import com.globalskills.user_service.Account.Service.AccountQueryService;
 import com.globalskills.user_service.Account.Service.EmailService;
+import com.globalskills.user_service.Authentication.Dto.ForgotPasswordRequest;
 import com.globalskills.user_service.Authentication.Dto.LoginRequest;
 import com.globalskills.user_service.Authentication.Dto.LoginResponse;
 import com.globalskills.user_service.Common.Dto.RegisterRequest;
@@ -74,8 +75,8 @@ public class AuthenticationService {
         }
     }
 
-    public void forgotPassword(String email){
-        Account account = accountQueryService.findAccountByEmail(email);
+    public void forgotPassword(ForgotPasswordRequest request){
+        Account account = accountQueryService.findAccountByEmail(request.getEmail());
         String token = jwtService.generateToken(account);
         EmailDto emailDto = new EmailDto();
         emailDto.setAccount(account);

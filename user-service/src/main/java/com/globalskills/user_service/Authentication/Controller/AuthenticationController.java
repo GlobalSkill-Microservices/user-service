@@ -1,5 +1,6 @@
 package com.globalskills.user_service.Authentication.Controller;
 
+import com.globalskills.user_service.Authentication.Dto.ForgotPasswordRequest;
 import com.globalskills.user_service.Authentication.Dto.LoginRequest;
 import com.globalskills.user_service.Authentication.Dto.LoginResponse;
 import com.globalskills.user_service.Authentication.Service.AuthenticationService;
@@ -33,8 +34,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody String email){
-        authenticationService.forgotPassword(email);
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request){
+        authenticationService.forgotPassword(request);
         BaseResponseAPI<?> responseAPI = new BaseResponseAPI<>(true,"Send email forgot password",null,null);
         return ResponseEntity.ok(responseAPI);
     }
