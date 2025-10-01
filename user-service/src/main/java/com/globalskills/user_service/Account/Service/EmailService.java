@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -22,9 +21,6 @@ public class EmailService {
 
     @Autowired
     JavaMailSender javaMailSender;
-
-    @Autowired
-    RestTemplate restTemplate;
 
     @Autowired
     TemplateEngine templateEngine;
@@ -41,7 +37,7 @@ public class EmailService {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper messageHelper = new MimeMessageHelper(message);
 
-            messageHelper.setFrom("quandmse183805@fpt.edu.vn");
+            messageHelper.setFrom("quanonepunch@gmail.com");
             messageHelper.setTo(emailDetail.getAccount().getEmail());
             messageHelper.setText(template, true);
             messageHelper.setSubject(emailDetail.getSubject());
@@ -69,7 +65,7 @@ public class EmailService {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper messageHelper = new MimeMessageHelper(message);
 
-            messageHelper.setFrom("quandmse183805@fpt.edu.vn");
+            messageHelper.setFrom("quanonepunch@gmail.com");
             messageHelper.setTo(emailDetail.getAccount().getEmail());
             messageHelper.setText(template, true);
             messageHelper.setSubject(emailDetail.getSubject());
