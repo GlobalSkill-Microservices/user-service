@@ -117,6 +117,13 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.postmarkapp/postmark -->
+		<dependency>
+			<groupId>com.postmarkapp</groupId>
+			<artifactId>postmark</artifactId>
+			<version>1.11.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

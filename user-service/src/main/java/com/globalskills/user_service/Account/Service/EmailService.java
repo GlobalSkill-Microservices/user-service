@@ -2,11 +2,16 @@ package com.globalskills.user_service.Account.Service;
 
 import com.globalskills.user_service.Account.Dto.EmailDto;
 import com.globalskills.user_service.Account.Exception.EmailException;
+import com.postmarkapp.postmark.Postmark;
+import com.postmarkapp.postmark.client.ApiClient;
+import com.postmarkapp.postmark.client.data.model.message.Message;
+import com.postmarkapp.postmark.client.data.model.message.MessageResponse;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,8 +24,14 @@ public class EmailService {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
-    @Autowired
-    JavaMailSender javaMailSender;
+//    @Autowired
+//    JavaMailSender javaMailSender;
+
+    @Value("${postmark.api.token}")
+    private String postmarkApiToken;
+
+    @Value("${postmark.sender.email}")
+    private String senderEmail;
 
     @Autowired
     TemplateEngine templateEngine;
@@ -33,22 +44,21 @@ public class EmailService {
             context.setVariable("link", emailDetail.getLink());
             context.setVariable("date", emailDetail.getCreatedDate());
             String template = templateEngine.process("EmailVerify", context);
-
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper messageHelper = new MimeMessageHelper(message);
-
-            messageHelper.setFrom("quanonepunch@gmail.com");
-            messageHelper.setTo(emailDetail.getAccount().getEmail());
-            messageHelper.setText(template, true);
-            messageHelper.setSubject(emailDetail.getSubject());
-            javaMailSender.send(message);
-            logger.info("Send verify email to: {}", emailDetail.getAccount().getEmail());
-            return true;
-        } catch (MessagingException e) {
-            logger.error("Error sending verify email: {}", e.getMessage(), e); // Log detail
-            throw new EmailException("Error sending email, please check your mail again", HttpStatus.BAD_REQUEST);
+            ApiClient client = Postmark.getApiClient(postmarkApiToken);
+            Message message = new Message(senderEmail, emailDetail.getAccount().getEmail(), emailDetail.getSubject(), template);
+            message.setMessageStream("transactional");
+            MessageResponse response = client.deliverMessage(message);
+            if (response.getErrorCode() == 0) {
+                logger.info("Send verify email to: {}", emailDetail.getAccount().getEmail());
+                return true;
+            } else {
+                logger.error("Postmark error sending verify email: {} - {}", response.getErrorCode(), response.getMessage());
+                throw new EmailException("Error sending email: " + response.getMessage(), HttpStatus.BAD_REQUEST);
+            }
+        } catch (EmailException e) {
+            throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error sending verify email: {}", e.getMessage(), e); // Log detail
+            logger.error("Unexpected error sending verify email: {}", e.getMessage(), e);
             throw new EmailException("Unexpected error when sending email", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -61,21 +71,20 @@ public class EmailService {
             context.setVariable("link", emailDetail.getLink());
             context.setVariable("date", emailDetail.getCreatedDate());
             String template = templateEngine.process("EmailResetPassword", context);
-
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper messageHelper = new MimeMessageHelper(message);
-
-            messageHelper.setFrom("quanonepunch@gmail.com");
-            messageHelper.setTo(emailDetail.getAccount().getEmail());
-            messageHelper.setText(template, true);
-            messageHelper.setSubject(emailDetail.getSubject());
-            javaMailSender.send(message);
-            logger.info("Send reset password email to: {}", emailDetail.getAccount().getEmail());
-        } catch (MessagingException e) {
-            logger.error("Error sending reset password email: {}", e.getMessage(), e);
-            throw new EmailException("Error sending email, please check your mail again", HttpStatus.BAD_REQUEST);
+            ApiClient client = Postmark.getApiClient(postmarkApiToken);
+            Message message = new Message(senderEmail, emailDetail.getAccount().getEmail(), emailDetail.getSubject(), template);
+            message.setMessageStream("transactional");
+            MessageResponse response = client.deliverMessage(message);
+            if (response.getErrorCode() == 0) {
+                logger.info("Send verify email to: {}", emailDetail.getAccount().getEmail());
+            } else {
+                logger.error("Postmark error sending verify email: {} - {}", response.getErrorCode(), response.getMessage());
+                throw new EmailException("Error sending email: " + response.getMessage(), HttpStatus.BAD_REQUEST);
+            }
+        } catch (EmailException e) {
+            throw e;
         } catch (Exception e) {
-            logger.error("Unexpected error sending reset password email: {}", e.getMessage(), e);
+            logger.error("Unexpected error sending verify email: {}", e.getMessage(), e);
             throw new EmailException("Unexpected error when sending email", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
