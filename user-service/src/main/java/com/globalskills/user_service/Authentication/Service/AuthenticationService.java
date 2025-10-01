@@ -52,7 +52,7 @@ public class AuthenticationService {
     }
 
     public LoginResponse register(RegisterRequest request){
-        boolean existAccount = accountQueryService.findAccountByEmailOrUsername(request.getUsername(), request.getEmail());
+        boolean existAccount = accountQueryService.findAccountByEmailOrUsername(request.getEmail(), request.getUsername());
         if(!existAccount){
             Account newAccount = modelMapper.map(request, Account.class);
             String hashPassword = BCrypt.hashpw(request.getPassword(),BCrypt.gensalt(10));
