@@ -1,13 +1,10 @@
 package com.globalskills.user_service.Account.Exception;
 
-import lombok.Getter;
+import com.globalskills.user_service.Common.Exception.BaseException;
 import org.springframework.http.HttpStatus;
 
-@Getter
-public class EmailException extends RuntimeException {
-    private final HttpStatus status;
+public class EmailException extends BaseException {
     public EmailException(String message,HttpStatus status) {
-        super(message);
-        this.status = status;
+        super(message,status);
     }
 }

@@ -2,6 +2,7 @@ package com.globalskills.user_service.Authentication.Service;
 
 import com.globalskills.user_service.Account.Dto.EmailDto;
 import com.globalskills.user_service.Account.Entity.Account;
+import com.globalskills.user_service.Account.Enum.AccountRole;
 import com.globalskills.user_service.Account.Exception.AccountException;
 import com.globalskills.user_service.Account.Service.AccountCommandService;
 import com.globalskills.user_service.Account.Service.AccountQueryService;
@@ -55,6 +56,7 @@ public class AuthenticationService {
             Account newAccount = modelMapper.map(request, Account.class);
             String hashPassword = BCrypt.hashpw(request.getPassword(),BCrypt.gensalt(10));
             newAccount.setPassword(hashPassword);
+            newAccount.setAccountRole(AccountRole.USER);
             accountCommandService.save(newAccount);
             EmailDto emailDto = new EmailDto();
             emailDto.setAccount(newAccount);
@@ -78,7 +80,7 @@ public class AuthenticationService {
         EmailDto emailDto = new EmailDto();
         emailDto.setAccount(account);
         emailDto.setSubject("Reset password");
-        emailDto.setLink("#"+ token);
+        emailDto.setLink("http://localhost:5173/verify-otp/"+ token);
         emailDto.setCreatedDate(new Date());
         emailService.sendEmailResetPassword(emailDto);
     }
