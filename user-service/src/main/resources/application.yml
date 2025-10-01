@@ -32,8 +32,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: quandmse183805@fpt.edu.vn
-    password: rovi zpqp qlhv ynva
+    username: quanonepunch@gmail.com
+    password: ${SPRING_MAIL_PASSWORD}
     default-encoding: UTF-8
     properties:
       mail:
@@ -41,6 +41,9 @@ spring:
           auth: true
           starttls:
             enable: true
+            required: true
+          timeout: 10000
+          connectiontimeout: 10000
 
   thymeleaf:
     prefix: classpath:/templates/
