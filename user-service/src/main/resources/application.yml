@@ -45,6 +45,12 @@ spring:
           timeout: 10000
           connectiontimeout: 10000
 
+postmark:
+  api:
+    token: ${TOKEN_POSTMARK}
+  sender:
+    email: quandmse183805@fpt.edu.vn
+
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
