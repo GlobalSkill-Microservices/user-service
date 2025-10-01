@@ -3,6 +3,7 @@ package com.globalskills.user_service.Authentication.Controller;
 import com.globalskills.user_service.Authentication.Dto.ForgotPasswordRequest;
 import com.globalskills.user_service.Authentication.Dto.LoginRequest;
 import com.globalskills.user_service.Authentication.Dto.LoginResponse;
+import com.globalskills.user_service.Authentication.Dto.ResetPasswordRequest;
 import com.globalskills.user_service.Authentication.Service.AuthenticationService;
 import com.globalskills.user_service.Common.Dto.BaseResponseAPI;
 import com.globalskills.user_service.Common.Dto.RegisterRequest;
@@ -41,8 +42,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestHeader("X-User-ID") Long id, @RequestBody String password){
-        authenticationService.resetPassword(id, password);
+    public ResponseEntity<?> resetPassword(@RequestHeader("X-User-ID") Long id, @RequestBody ResetPasswordRequest request){
+        authenticationService.resetPassword(id, request);
         BaseResponseAPI<?> responseAPI = new BaseResponseAPI<>(true,"Reset password successfully",null,null);
         return ResponseEntity.ok(responseAPI);
     }
