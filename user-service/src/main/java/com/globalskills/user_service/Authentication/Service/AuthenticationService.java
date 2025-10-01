@@ -10,6 +10,7 @@ import com.globalskills.user_service.Account.Service.EmailService;
 import com.globalskills.user_service.Authentication.Dto.ForgotPasswordRequest;
 import com.globalskills.user_service.Authentication.Dto.LoginRequest;
 import com.globalskills.user_service.Authentication.Dto.LoginResponse;
+import com.globalskills.user_service.Authentication.Dto.ResetPasswordRequest;
 import com.globalskills.user_service.Common.Dto.RegisterRequest;
 import org.mindrot.jbcrypt.BCrypt;
 import org.modelmapper.ModelMapper;
@@ -86,9 +87,9 @@ public class AuthenticationService {
         emailService.sendEmailResetPassword(emailDto);
     }
 
-    public void resetPassword(Long accountId, String password){
+    public void resetPassword(Long accountId, ResetPasswordRequest request){
         Account account = accountQueryService.findAccountById(accountId);
-        account.setPassword(BCrypt.hashpw(password,BCrypt.gensalt(10)));
+        account.setPassword(BCrypt.hashpw(request.getPassword(),BCrypt.gensalt(10)));
         try{
             accountCommandService.save(account);
         }catch(RuntimeException e){
