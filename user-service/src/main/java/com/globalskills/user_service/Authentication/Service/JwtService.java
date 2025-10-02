@@ -18,7 +18,7 @@ public class JwtService {
     @Autowired
     AccountQueryService accountQueryService;
 
-    public final String KEY_SECRET="c4a7e5bc8d9a53b249f9e7a3eb8d44f4c281cfe6b327f0b2f86f5c9a7e3408d1";
+    public final String KEY_SECRET="ZhA/MMY/9vj95sgNMUnQIG/VDOCywzYVcf+R+HEhokc=";
     private SecretKey getSignKey(){
         byte[] keyBytes = Decoders.BASE64.decode(KEY_SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
