@@ -7,6 +7,8 @@ import com.globalskills.user_service.Authentication.Dto.ResetPasswordRequest;
 import com.globalskills.user_service.Authentication.Service.AuthenticationService;
 import com.globalskills.user_service.Common.Dto.BaseResponseAPI;
 import com.globalskills.user_service.Common.Dto.RegisterRequest;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/authentication")
 @CrossOrigin("*")
+@SecurityRequirement(name = "api")
 public class AuthenticationController {
 
     @Autowired
@@ -42,7 +45,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestHeader("X-User-ID") Long id, @RequestBody ResetPasswordRequest request){
+    public ResponseEntity<?> resetPassword(
+            @Parameter(hidden = true)
+            @RequestHeader(value = "X-User-ID",required = false) Long id,
+            @RequestBody ResetPasswordRequest request){
         authenticationService.resetPassword(id, request);
         BaseResponseAPI<?> responseAPI = new BaseResponseAPI<>(true,"Reset password successfully",null,null);
         return ResponseEntity.ok(responseAPI);

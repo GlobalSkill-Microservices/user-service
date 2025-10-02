@@ -6,6 +6,7 @@ import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Service.AccountCommandService;
 import com.globalskills.user_service.Account.Service.AccountQueryService;
 import com.globalskills.user_service.Common.Dto.BaseResponseAPI;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/account")
 @CrossOrigin("*")
+@SecurityRequirement(name = "api")
 public class AccountController {
 
     @Autowired

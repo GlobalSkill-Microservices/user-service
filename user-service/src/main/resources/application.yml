@@ -51,6 +51,7 @@ postmark:
   sender:
     email: quandmse183805@fpt.edu.vn
 
+
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
