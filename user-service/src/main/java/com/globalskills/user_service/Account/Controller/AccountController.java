@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/user")
 @CrossOrigin("*")
 @SecurityRequirement(name = "api")
 public class AccountController {
