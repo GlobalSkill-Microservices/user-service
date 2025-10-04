@@ -5,7 +5,6 @@ import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Exception.AccountException;
 import com.globalskills.user_service.Account.Repository.AccountRepo;
 import com.globalskills.user_service.Common.Dto.PageResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
