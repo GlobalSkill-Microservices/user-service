@@ -82,7 +82,7 @@ public class AccountController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDir,
-            @RequestParam(defaultValue = "null") Boolean isActive
+            @RequestParam(required = false) Boolean isActive
     ){
         PageResponse<AccountResponse> pageResponse = accountQueryService.getListAccount(page, size, sortBy, sortDir, isActive);
         BaseResponseAPI<PageResponse<AccountResponse>> responseAPI = new BaseResponseAPI<>(true,"Get list account successfully",pageResponse,null);
