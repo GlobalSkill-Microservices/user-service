@@ -7,8 +7,8 @@ import com.globalskills.user_service.Account.Service.AccountCommandService;
 import com.globalskills.user_service.Account.Service.AccountQueryService;
 import com.globalskills.user_service.Common.Dto.BaseResponseAPI;
 import com.globalskills.user_service.Common.Dto.PageResponse;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,8 +68,10 @@ public class AccountController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getCurrentAccount(HttpServletRequest request){
-        AccountResponse response = accountQueryService.getCurrentUser(request);
+    public ResponseEntity<?> getCurrentAccount(
+            @Parameter(hidden = true)
+            @RequestHeader(value = "X-User-ID",required = false)Long id){
+        AccountResponse response = accountQueryService.getCurrentUser(id);
         BaseResponseAPI<AccountResponse> responseAPI = new BaseResponseAPI<>(true,"Get current account successfully",response,null);
         return ResponseEntity.ok(responseAPI);
     }
