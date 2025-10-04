@@ -45,13 +45,8 @@ public class AccountQueryService{
 
 
 
-    public AccountResponse getCurrentUser(HttpServletRequest request){
-        String userIdHeader = request.getHeader("X-Account-ID");
-        if (userIdHeader == null){
-            throw new AccountException("Can't found user ID",HttpStatus.NOT_FOUND);
-        }
-        Long userId = Long.valueOf(userIdHeader);
-        Account account = findAccountById(userId);
+    public AccountResponse getCurrentUser(Long id){
+        Account account = findAccountById(id);
         return modelMapper.map(account, AccountResponse.class);
     }
 
