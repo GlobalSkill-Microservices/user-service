@@ -82,7 +82,7 @@ public class AuthenticationService {
         EmailDto emailDto = new EmailDto();
         emailDto.setAccount(account);
         emailDto.setSubject("Reset password");
-        emailDto.setLink("http://localhost:5173/verify-otp/"+ token);
+        emailDto.setLink("http://localhost:5173/reset-password/"+ token);
         emailDto.setCreatedDate(new Date());
         emailService.sendEmailResetPassword(emailDto);
     }
