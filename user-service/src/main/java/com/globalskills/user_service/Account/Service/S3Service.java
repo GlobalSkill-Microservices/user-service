@@ -1,5 +1,6 @@
 package com.globalskills.user_service.Account.Service;
 
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,20 @@ public class S3Service {
     @Value("${aws.s3.bucketName}")
     String bucketName;
 
+    public String detectContentType(MultipartFile file) throws IOException {
+        Tika tika = new Tika();
+        return tika.detect(file.getInputStream());
+    }
+
     public String upLoadCv(MultipartFile file) throws IOException{
+        String contentType = detectContentType(file);
         String originalFileName = file.getOriginalFilename();
         String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFileName;
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(uniqueFileName) // Tên file trên S3
+                .contentType(contentType)
                 .build();
 
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
