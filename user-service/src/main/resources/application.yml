@@ -56,3 +56,10 @@ postmark:
     prefix: classpath:/templates/
     suffix: .html
     mode: HTML
+
+aws:
+  accessKeyId: ${ACCESS_KEY_AWS}
+  secretKey: ${SECRET_ACCESS_KEY_AWS}
+  region: ap-southeast-1
+  s3:
+    bucketName: globalskill-private-bucket

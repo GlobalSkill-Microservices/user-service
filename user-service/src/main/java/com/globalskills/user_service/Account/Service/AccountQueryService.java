@@ -25,6 +25,9 @@ public class AccountQueryService{
     @Autowired
     ModelMapper modelMapper;
 
+    public List<Account> findAllAccountById(List<Long> list){
+        return accountRepo.findAllById(list);
+    }
 
     public Account findAccountById(Long id){
         return accountRepo.findById(id).orElseThrow(()->new AccountException("Account not found", HttpStatus.NOT_FOUND));

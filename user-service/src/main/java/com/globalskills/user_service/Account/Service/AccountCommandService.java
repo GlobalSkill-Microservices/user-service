@@ -2,6 +2,7 @@ package com.globalskills.user_service.Account.Service;
 
 import com.globalskills.user_service.Account.Dto.AccountRequest;
 import com.globalskills.user_service.Account.Dto.AccountResponse;
+import com.globalskills.user_service.Account.Dto.CvListApproved;
 import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Enum.AccountRole;
 import com.globalskills.user_service.Account.Exception.AccountException;
@@ -10,8 +11,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -27,6 +32,9 @@ public class AccountCommandService {
 
     @Autowired
     AccountQueryService accountQueryService;
+
+    @Autowired
+    S3Service s3Service;
 
     public AccountResponse save(Account account){
         accountRepo.save(account);
@@ -74,6 +82,29 @@ public class AccountCommandService {
         account.setIsActive(false);
         accountRepo.save(account);
     }
+
+    @Transactional
+    public boolean approvedCv(CvListApproved listApproved){
+        List<Long> accountIds = listApproved.getId();
+        if (accountIds == null || accountIds.isEmpty()) {
+            return false;
+        }
+        List<Account> accountList = accountQueryService.findAllAccountById(accountIds);
+        for(Account account : accountList){
+            account.setAccountRole(AccountRole.TEACHER);
+        }
+        accountRepo.saveAll(accountList);
+        return true;
+    }
+
+    public AccountResponse cvUpload(MultipartFile file, Long accountId)throws IOException {
+        Account account = accountQueryService.findAccountById(accountId);
+        String profileUrl = s3Service.upLoadCv(file);
+        account.setProfileCvUrl(profileUrl);
+        accountRepo.save(account);
+        return modelMapper.map(account,AccountResponse.class);
+    }
+
 
 
 
