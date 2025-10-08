@@ -2,6 +2,7 @@ package com.globalskills.user_service.Account.Controller;
 
 import com.globalskills.user_service.Account.Dto.AccountRequest;
 import com.globalskills.user_service.Account.Dto.AccountResponse;
+import com.globalskills.user_service.Account.Dto.CvListApproved;
 import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Service.AccountCommandService;
 import com.globalskills.user_service.Account.Service.AccountQueryService;
@@ -10,8 +11,12 @@ import com.globalskills.user_service.Common.Dto.PageResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/user")
@@ -86,6 +91,23 @@ public class AccountController {
     ){
         PageResponse<AccountResponse> pageResponse = accountQueryService.getListAccount(page, size, sortBy, sortDir, isActive);
         BaseResponseAPI<PageResponse<AccountResponse>> responseAPI = new BaseResponseAPI<>(true,"Get list account successfully",pageResponse,null);
+        return ResponseEntity.ok(responseAPI);
+    }
+
+    @PutMapping("/approvedCv")
+    public ResponseEntity<?> approvedCv(@RequestBody CvListApproved listApproved){
+        boolean response = accountCommandService.approvedCv(listApproved);
+        BaseResponseAPI<?> responseAPI = new BaseResponseAPI<>(true,"Approved successfully",response,null);
+        return ResponseEntity.ok(responseAPI);
+    }
+
+    @PutMapping(value = "/cvUpload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> cvUpload(MultipartFile file,
+                                      @Parameter(hidden = true)
+                                      @RequestHeader(value = "X-User-ID",required = false)
+                                      Long accountId)throws IOException {
+        AccountResponse response = accountCommandService.cvUpload(file, accountId);
+        BaseResponseAPI<AccountResponse> responseAPI = new BaseResponseAPI<>(true,"Cv upload successfully",response,null);
         return ResponseEntity.ok(responseAPI);
     }
 
