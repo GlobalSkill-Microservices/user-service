@@ -1,5 +1,6 @@
 package com.globalskills.user_service.Account.Dto;
 
+import com.globalskills.user_service.Account.Enum.AccountRole;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,5 +21,5 @@ public class AccountRequest {
     String phone;
     String email;
     String avatarUrl;
-    String profileCvUrl;
+    AccountRole accountRole;
 }

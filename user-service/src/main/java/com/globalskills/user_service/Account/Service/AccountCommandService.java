@@ -7,6 +7,7 @@ import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Enum.AccountRole;
 import com.globalskills.user_service.Account.Exception.AccountException;
 import com.globalskills.user_service.Account.Repository.AccountRepo;
+import org.mindrot.jbcrypt.BCrypt;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,31 +42,21 @@ public class AccountCommandService {
         return modelMapper.map(account, AccountResponse.class);
     }
 
-    public void authorizedRole(String accountRole ,String authRole){
-        Set<AccountRole> allowRolesForManager = EnumSet.of(AccountRole.USER,AccountRole.TEACHER);
-        if (!Objects.equals(authRole, "ADMIN") && !Objects.equals(authRole, "MANAGER")) {
-            throw new AccountException("Unauthorized action", HttpStatus.BAD_REQUEST);
-        }
-        if (Objects.equals(authRole, "MANAGER") && !allowRolesForManager.contains(AccountRole.valueOf(accountRole))) {
-            throw new AccountException("Manager do not have permission to set role: " + accountRole, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    public AccountResponse create(AccountRequest request,String accountRole ,String authRole){
-        authorizedRole(accountRole, authRole);
+    public AccountResponse create(AccountRequest request){
         Account account = modelMapper.map(request,Account.class);
-        account.setAccountRole(AccountRole.valueOf(accountRole));
-        String originPassword = account.getPassword();
+        account.setAccountRole(request.getAccountRole());
+        String hashPassword = BCrypt.hashpw(request.getPassword(),BCrypt.gensalt(10));
+        account.setPassword(hashPassword);
         account.setIsActive(true);
         accountRepo.save(account);
         return modelMapper.map(account,AccountResponse.class);
     }
 
-    public AccountResponse update(AccountRequest request, String accountRole, Long accountId, String authRole){
-        authorizedRole(accountRole, authRole);
+    public AccountResponse updateByUserId(AccountRequest request,Long accountId){
         Account oldAccount = accountQueryService.findAccountById(accountId);
-        oldAccount.setAccountRole(AccountRole.valueOf(accountRole));
-        String newPassword = request.getPassword();
+        modelMapper.map(request,oldAccount);
+        String hashPassword = BCrypt.hashpw(request.getPassword(),BCrypt.gensalt(10));
+        oldAccount.setPassword(hashPassword);
         accountRepo.save(oldAccount);
         return modelMapper.map(oldAccount, AccountResponse.class);
     }
@@ -73,6 +64,8 @@ public class AccountCommandService {
     public AccountResponse update(AccountRequest request, Long currentAccountId){
         Account oldAccount = accountQueryService.findAccountById(currentAccountId);
         modelMapper.map(request,oldAccount);
+        String hashPassword = BCrypt.hashpw(request.getPassword(),BCrypt.gensalt(10));
+        oldAccount.setPassword(hashPassword);
         accountRepo.save(oldAccount);
         return modelMapper.map(oldAccount, AccountResponse.class);
     }
