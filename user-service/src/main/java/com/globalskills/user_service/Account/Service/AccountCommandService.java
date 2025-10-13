@@ -5,10 +5,12 @@ import com.globalskills.user_service.Account.Dto.AccountResponse;
 import com.globalskills.user_service.Account.Dto.CvListApproved;
 import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Enum.AccountRole;
+import com.globalskills.user_service.Account.Exception.AccountException;
 import com.globalskills.user_service.Account.Repository.AccountRepo;
 import org.mindrot.jbcrypt.BCrypt;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +32,16 @@ public class AccountCommandService {
 
     @Autowired
     S3Service s3Service;
+
+    public AccountResponse updateRole(Long id){
+        Account updateAccount = accountQueryService.findAccountById(id);
+        if(updateAccount.getAccountRole() != AccountRole.USER){
+            throw new AccountException("Account is not Role user to update", HttpStatus.BAD_REQUEST);
+        }
+        updateAccount.setAccountRole(AccountRole.TEACHER);
+        accountRepo.save(updateAccount);
+        return modelMapper.map(updateAccount, AccountResponse.class);
+    }
 
     public AccountResponse save(Account account){
         accountRepo.save(account);

@@ -35,6 +35,14 @@ public class AccountController {
 //        BaseResponseAPI<AccountResponse> responseAPI = new BaseResponseAPI<>(true,"Create account successfully",newAccount,null);
 //        return ResponseEntity.ok(responseAPI);
 //    }
+    @PutMapping("/me/role-teacher")
+    public ResponseEntity<?> updateRole( @Parameter(hidden = true)
+                                         @RequestHeader(value = "X-User-ID",required = false) Long currentAccountId){
+        AccountResponse response = accountCommandService.updateRole(currentAccountId);
+        BaseResponseAPI<AccountResponse> responseAPI = new BaseResponseAPI<>(true,"Update account role to TEACHER successfully",response,null);
+        return ResponseEntity.ok(responseAPI);
+    }
+
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody AccountRequest request){
