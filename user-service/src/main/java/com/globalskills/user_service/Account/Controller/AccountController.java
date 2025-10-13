@@ -54,15 +54,15 @@ public class AccountController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateByUserId(@RequestBody AccountRequest request,@PathVariable Long accountId){
-        AccountResponse newAccount = accountCommandService.update(request, accountId);
+    public ResponseEntity<?> updateByUserId(@RequestBody AccountRequest request,@PathVariable Long id){
+        AccountResponse newAccount = accountCommandService.update(request, id);
         BaseResponseAPI<AccountResponse> responseAPI = new BaseResponseAPI<>(true,"Update account successfully",newAccount,null);
         return ResponseEntity.ok(responseAPI);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long accountId){
-        accountCommandService.delete(accountId);
+    public ResponseEntity<?> delete(@PathVariable Long id){
+        accountCommandService.delete(id);
         BaseResponseAPI<?> responseAPI = new BaseResponseAPI<>(true,"Delete account successfully",null,null);
         return ResponseEntity.ok(responseAPI);
     }
