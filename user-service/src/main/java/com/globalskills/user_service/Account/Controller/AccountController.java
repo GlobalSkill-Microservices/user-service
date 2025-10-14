@@ -3,7 +3,6 @@ package com.globalskills.user_service.Account.Controller;
 import com.globalskills.user_service.Account.Dto.AccountRequest;
 import com.globalskills.user_service.Account.Dto.AccountResponse;
 import com.globalskills.user_service.Account.Dto.CvListApproved;
-import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Service.AccountCommandService;
 import com.globalskills.user_service.Account.Service.AccountQueryService;
 import com.globalskills.user_service.Common.Dto.BaseResponseAPI;
@@ -72,6 +71,13 @@ public class AccountController {
     public ResponseEntity<?> delete(@PathVariable Long id){
         accountCommandService.delete(id);
         BaseResponseAPI<?> responseAPI = new BaseResponseAPI<>(true,"Delete account successfully",null,null);
+        return ResponseEntity.ok(responseAPI);
+    }
+
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<?> active(@PathVariable Long id){
+        accountCommandService.activeAccount(id);
+        BaseResponseAPI<?> responseAPI = new BaseResponseAPI<>(true,"Restore account successfully",null,null);
         return ResponseEntity.ok(responseAPI);
     }
 

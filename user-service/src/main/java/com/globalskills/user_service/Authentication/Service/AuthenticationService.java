@@ -65,10 +65,13 @@ public class AuthenticationService {
             emailDto.setSubject("Verify your email");
             emailDto.setLink("#");
             emailDto.setCreatedDate(new Date());
-            boolean emailSend = emailService.sendEmailVerify(emailDto);
-            if(emailSend){
-                newAccount.setIsActive(true);
-            }
+
+            emailService.sendEmailVerify(emailDto);
+
+            newAccount.setIsActive(true);
+//            if(emailSend){
+//                newAccount.setIsActive(true);
+//            }
             return modelMapper.map(newAccount, LoginResponse.class);
 
         }else{

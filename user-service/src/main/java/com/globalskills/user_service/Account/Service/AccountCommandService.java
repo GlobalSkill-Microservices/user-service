@@ -82,6 +82,12 @@ public class AccountCommandService {
         accountRepo.save(account);
     }
 
+    public void activeAccount(Long accountId){
+        Account account = accountQueryService.findAccountById(accountId);
+        account.setIsActive(true);
+        accountRepo.save(account);
+    }
+
     @Transactional
     public boolean approvedCv(CvListApproved listApproved){
         List<Long> accountIds = listApproved.getId();
