@@ -33,7 +33,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: globalskillsexe@gmail.com
-    password: ${SPRING_MAIL_PASSWORD}
+    password: jqpe obdi aldj jwzb
     default-encoding: UTF-8
     properties:
       mail:
