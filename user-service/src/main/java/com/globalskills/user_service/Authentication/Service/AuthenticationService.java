@@ -59,19 +59,19 @@ public class AuthenticationService {
             String hashPassword = BCrypt.hashpw(request.getPassword(),BCrypt.gensalt(10));
             newAccount.setPassword(hashPassword);
             newAccount.setAccountRole(AccountRole.USER);
-            accountCommandService.save(newAccount);
+
             EmailDto emailDto = new EmailDto();
             emailDto.setAccount(newAccount);
             emailDto.setSubject("Verify your email");
             emailDto.setLink("#");
             emailDto.setCreatedDate(new Date());
 
-            emailService.sendEmailVerify(emailDto);
+            boolean emailSend = emailService.sendEmailVerify(emailDto);
 
-            newAccount.setIsActive(true);
-//            if(emailSend){
-//                newAccount.setIsActive(true);
-//            }
+            if(emailSend){
+                newAccount.setIsActive(true);
+            }
+            accountCommandService.save(newAccount);
             return modelMapper.map(newAccount, LoginResponse.class);
 
         }else{
