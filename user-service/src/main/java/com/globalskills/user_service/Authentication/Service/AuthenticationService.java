@@ -59,7 +59,8 @@ public class AuthenticationService {
             String hashPassword = BCrypt.hashpw(request.getPassword(),BCrypt.gensalt(10));
             newAccount.setPassword(hashPassword);
             newAccount.setAccountRole(AccountRole.USER);
-
+            newAccount.setIsActive(true);
+            accountCommandService.save(newAccount);
             EmailDto emailDto = new EmailDto();
             emailDto.setAccount(newAccount);
             emailDto.setSubject("Verify your email");
