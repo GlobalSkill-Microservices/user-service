@@ -88,4 +88,30 @@ public class AccountQueryService{
                 accountPage.isLast()
         );
     }
+
+    public PageResponse<AccountResponse> getListAccountApproveCV(
+            int page,
+            int size,
+            String sortBy,
+            String sortDir
+    ){
+        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Page<Account> accountPage = accountRepo.findByProfileCvUrlIsNotNull(pageRequest);
+        if(accountPage.isEmpty()){
+            return null;
+        }
+        List<AccountResponse> responses = accountPage
+                .stream()
+                .map(account -> modelMapper.map(account, AccountResponse.class))
+                .toList();
+        return new PageResponse<>(
+                responses,
+                page,
+                size,
+                accountPage.getTotalElements(),
+                accountPage.getTotalPages(),
+                accountPage.isLast()
+        );
+    }
 }

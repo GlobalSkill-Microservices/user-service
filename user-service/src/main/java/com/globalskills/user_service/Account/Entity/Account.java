@@ -34,10 +34,18 @@ public class Account{
 
     @ManyToMany
     @JoinTable(
-            name = "manager_languages",
-            joinColumns = @JoinColumn(name = "manager_id"),
+            name = "mentor_languages",
+            joinColumns = @JoinColumn(name = "mentor_id"),
             inverseJoinColumns = @JoinColumn(name = "language_id")
     )
-    Set<Language> managedLanguage;
+    Set<Language> mentoringLanguages = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "mentor_domains",
+            joinColumns = @JoinColumn(name = "mentor_id"),
+            inverseJoinColumns = @JoinColumn(name = "domain_id")
+    )
+    Set<Domain> mentoringDomains = new HashSet<>();
 
 }

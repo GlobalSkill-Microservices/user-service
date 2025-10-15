@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -22,4 +23,6 @@ public class AccountRequest {
     String email;
     String avatarUrl;
     AccountRole accountRole;
+    Set<String> languageNames;
+    Set<String> domainNames;
 }
