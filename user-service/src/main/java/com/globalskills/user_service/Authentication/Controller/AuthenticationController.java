@@ -22,7 +22,6 @@ public class AuthenticationController {
     @Autowired
     AuthenticationService authenticationService;
 
-
     @PostMapping("/login")
     public ResponseEntity<?> login (@RequestBody LoginRequest request){
         LoginResponse response = authenticationService.login(request);

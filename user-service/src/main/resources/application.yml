@@ -30,10 +30,10 @@ spring:
     allow-circular-references: true
 
   mail:
-    host: smtp.gmail.com
+    host: smtp.sendgrid.net
     port: 587
-    username: globalskillsexe@gmail.com
-    password: jqpe obdi aldj jwzb
+    username: apikey
+    password: {SPRING_MAIL_PASSWORD}
     default-encoding: UTF-8
     properties:
       mail:
@@ -41,15 +41,13 @@ spring:
           auth: true
           starttls:
             enable: true
-            required: true
-          timeout: 10000
-          connectiontimeout: 10000
 
-postmark:
-  api:
-    token: ${TOKEN_POSTMARK}
-  sender:
-    email: quandmse183805@fpt.edu.vn
+logging:
+  level:
+    org:
+      apache:
+        coyote:
+          http11: DEBUG
 
 
   thymeleaf:
