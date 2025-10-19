@@ -5,14 +5,6 @@ spring:
   application:
     name: user-service
 
-  web:
-    cors:
-      mappings:
-        "/**":
-          allowed-origins: "*"
-          allowed-methods: "*"
-          allowed-headers: "*"
-
   datasource:
     url: jdbc:mysql://globalskill-globalskill.e.aivencloud.com:23246/user-service?ssl-mode=REQUIRED
     username: avnadmin
