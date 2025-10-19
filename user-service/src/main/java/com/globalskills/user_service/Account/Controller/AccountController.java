@@ -20,7 +20,6 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin("*")
 @SecurityRequirement(name = "api")
 public class AccountController {
 
