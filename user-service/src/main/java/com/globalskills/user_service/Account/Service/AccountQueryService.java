@@ -25,6 +25,14 @@ public class AccountQueryService{
     @Autowired
     ModelMapper modelMapper;
 
+    public boolean checkActiveAccount(Long id){
+        Account account = findAccountById(id);
+        if(account.getIsActive()){
+            return true;
+        }
+        throw new AccountException("Your account need to update gmail",HttpStatus.BAD_REQUEST);
+    }
+
     public List<Account> findAllAccountById(List<Long> list){
         return accountRepo.findAllById(list);
     }

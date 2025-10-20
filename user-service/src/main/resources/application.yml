@@ -21,19 +21,6 @@ spring:
   main:
     allow-circular-references: true
 
-  mail:
-    host: smtp.sendgrid.net
-    port: 587
-    username: apikey
-    password: {SPRING_MAIL_PASSWORD}
-    default-encoding: UTF-8
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
 logging:
   level:
     org:
@@ -53,3 +40,7 @@ aws:
   region: ap-southeast-1
   s3:
     bucketName: globalskill-private-bucket
+
+sendgrid:
+  api-key: ${SENDGRID_API}
+  from-email: globalskillsexe@gmail.com
