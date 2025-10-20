@@ -35,6 +35,15 @@ public class AccountController {
 //        return ResponseEntity.ok(responseAPI);
 //    }
 
+    @GetMapping("/check-active")
+    public ResponseEntity<?> checkActiveAccount(@Parameter(hidden = true)
+                                                @RequestHeader(value = "X-User-ID",required = false) Long currentAccountId){
+        boolean response = accountQueryService.checkActiveAccount(currentAccountId);
+        BaseResponseAPI<Boolean> responseAPI = new BaseResponseAPI<>(true,"Check active account successfully",response,null);
+        return ResponseEntity.ok(responseAPI);
+    }
+
+
     @PutMapping("/change-password")
     public ResponseEntity<?> changPassword(@Parameter(hidden = true)
                                            @RequestHeader(value = "X-User-ID",required = false) Long currentAccountId,
