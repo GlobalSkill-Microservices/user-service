@@ -25,6 +25,7 @@ public class DashboardService {
         List<Account> accounts = accountRepo.findAll();
 
         Map<AccountRole, Long> grouped = accounts.stream()
+                .filter(account -> account.getAccountRole() != null)
                 .collect(Collectors.groupingBy(Account::getAccountRole, Collectors.counting()));
 
         return grouped.entrySet().stream()
