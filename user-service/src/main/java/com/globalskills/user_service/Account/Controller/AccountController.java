@@ -2,9 +2,11 @@ package com.globalskills.user_service.Account.Controller;
 
 import com.globalskills.user_service.Account.Dto.AccountRequest;
 import com.globalskills.user_service.Account.Dto.AccountResponse;
+import com.globalskills.user_service.Account.Dto.CountUserResponse;
 import com.globalskills.user_service.Account.Dto.CvListApproved;
 import com.globalskills.user_service.Account.Service.AccountCommandService;
 import com.globalskills.user_service.Account.Service.AccountQueryService;
+import com.globalskills.user_service.Account.Service.DashboardService;
 import com.globalskills.user_service.Authentication.Dto.ResetPasswordRequest;
 import com.globalskills.user_service.Common.Dto.BaseResponseAPI;
 import com.globalskills.user_service.Common.Dto.PageResponse;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -29,11 +32,21 @@ public class AccountController {
     @Autowired
     AccountQueryService accountQueryService;
 
+    @Autowired
+    DashboardService dashboardService;
+
 //    public ResponseEntity<?> save(Account account){
 //        AccountResponse newAccount = accountCommandService.save(account);
 //        BaseResponseAPI<AccountResponse> responseAPI = new BaseResponseAPI<>(true,"Create account successfully",newAccount,null);
 //        return ResponseEntity.ok(responseAPI);
 //    }
+
+    @GetMapping("/dashboard/user-count-by-role")
+    public ResponseEntity<?> getUserCountByRole(){
+        List<CountUserResponse> responses = dashboardService.getUserCountByRole();
+        BaseResponseAPI<List<CountUserResponse>> responseAPI = new BaseResponseAPI<>(true,"Get user count by role successfully",responses,null);
+        return  ResponseEntity.ok(responseAPI);
+    }
 
     @GetMapping("/check-active")
     public ResponseEntity<?> checkActiveAccount(@Parameter(hidden = true)
