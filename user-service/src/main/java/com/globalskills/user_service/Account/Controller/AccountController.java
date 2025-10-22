@@ -1,9 +1,7 @@
 package com.globalskills.user_service.Account.Controller;
 
-import com.globalskills.user_service.Account.Dto.AccountRequest;
-import com.globalskills.user_service.Account.Dto.AccountResponse;
-import com.globalskills.user_service.Account.Dto.CountUserResponse;
-import com.globalskills.user_service.Account.Dto.CvListApproved;
+import com.globalskills.user_service.Account.Dto.*;
+import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Service.AccountCommandService;
 import com.globalskills.user_service.Account.Service.AccountQueryService;
 import com.globalskills.user_service.Account.Service.DashboardService;
@@ -12,6 +10,7 @@ import com.globalskills.user_service.Common.Dto.BaseResponseAPI;
 import com.globalskills.user_service.Common.Dto.PageResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +33,9 @@ public class AccountController {
 
     @Autowired
     DashboardService dashboardService;
+
+    @Autowired
+    ModelMapper modelMapper;
 
 //    public ResponseEntity<?> save(Account account){
 //        AccountResponse newAccount = accountCommandService.save(account);
@@ -176,6 +178,18 @@ public class AccountController {
     ){
         PageResponse<AccountResponse> pageResponse = accountQueryService.getListAccountApproveCV(page, size, sortBy, sortDir);
         BaseResponseAPI<PageResponse<AccountResponse>> responseAPI = new BaseResponseAPI<>(true,"Get list account cv successfully",pageResponse,null);
+        return ResponseEntity.ok(responseAPI);
+    }
+
+    @GetMapping("/batch")
+    public ResponseEntity<?> getAccountByIds(@RequestParam("ids") List<Long> ids){
+        List<Account> accountList = accountQueryService.findAllAccountById(ids);
+
+        List<AccountDto> responses = accountList
+                .stream()
+                .map(account -> modelMapper.map(account, AccountDto.class))
+                .toList();
+        BaseResponseAPI<List<AccountDto>> responseAPI = new BaseResponseAPI<>(true,"Get list account successfully",responses,null);
         return ResponseEntity.ok(responseAPI);
     }
 
