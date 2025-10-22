@@ -189,8 +189,8 @@ public class AccountController {
                 .stream()
                 .map(account -> modelMapper.map(account, AccountDto.class))
                 .toList();
-        BaseResponseAPI<List<AccountDto>> responseAPI = new BaseResponseAPI<>(true,"Get list account successfully",responses,null);
-        return ResponseEntity.ok(responseAPI);
+
+        return ResponseEntity.ok(responses);
     }
 
 }
