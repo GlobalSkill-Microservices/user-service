@@ -181,16 +181,4 @@ public class AccountController {
         return ResponseEntity.ok(responseAPI);
     }
 
-    @GetMapping("/batch")
-    public ResponseEntity<?> getAccountByIds(@RequestParam("ids") List<Long> ids){
-        List<Account> accountList = accountQueryService.findAllAccountById(ids);
-
-        List<AccountDto> responses = accountList
-                .stream()
-                .map(account -> modelMapper.map(account, AccountDto.class))
-                .toList();
-
-        return ResponseEntity.ok(responses);
-    }
-
 }
