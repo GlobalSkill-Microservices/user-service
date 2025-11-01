@@ -1,6 +1,7 @@
 package com.globalskills.user_service.Account.Dto;
 
 import com.globalskills.user_service.Account.Enum.AccountRole;
+import com.globalskills.user_service.Account.Enum.ApplicationStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class AccountResponse {
     String email;
     String avatarUrl;
     AccountRole accountRole;
+    ApplicationStatus applicationStatus;
     String profileCvUrl;
     Boolean isActive;
     Date lastLogin;
