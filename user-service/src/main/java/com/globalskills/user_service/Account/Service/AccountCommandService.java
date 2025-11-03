@@ -8,6 +8,7 @@ import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Entity.Domain;
 import com.globalskills.user_service.Account.Entity.Language;
 import com.globalskills.user_service.Account.Enum.AccountRole;
+import com.globalskills.user_service.Account.Enum.ApplicationStatus;
 import com.globalskills.user_service.Account.Exception.AccountException;
 import com.globalskills.user_service.Account.Repository.AccountRepo;
 import com.globalskills.user_service.Account.Repository.DomainRepo;
@@ -51,19 +52,9 @@ public class AccountCommandService {
     @Autowired
     EmailService emailService;
 
-    public AccountResponse updateRole(Long id){
-        Account updateAccount = accountQueryService.findAccountById(id);
-        if(updateAccount.getAccountRole() != AccountRole.USER){
-            throw new AccountException("Account is not Role user to update", HttpStatus.BAD_REQUEST);
-        }
-        updateAccount.setAccountRole(AccountRole.TEACHER);
-        accountRepo.save(updateAccount);
-        return modelMapper.map(updateAccount, AccountResponse.class);
-    }
-
-    public AccountResponse save(Account account){
+    public void save(Account account){
         accountRepo.save(account);
-        return modelMapper.map(account, AccountResponse.class);
+        modelMapper.map(account, AccountResponse.class);
     }
 
     public AccountResponse create(AccountRequest request){
@@ -137,6 +128,7 @@ public class AccountCommandService {
         List<Account> accountList = accountQueryService.findAllAccountById(accountIds);
         for(Account account : accountList){
             account.setAccountRole(AccountRole.TEACHER);
+            account.setApplicationStatus(ApplicationStatus.APPROVED);
 
             EmailDto emailDto = new EmailDto();
             emailDto.setAccount(account);
@@ -158,6 +150,7 @@ public class AccountCommandService {
         }
         List<Account> accountList = accountQueryService.findAllAccountById(accountIds);
         for(Account account : accountList){
+            account.setApplicationStatus(ApplicationStatus.REJECT);
 
             EmailDto emailDto = new EmailDto();
             emailDto.setAccount(account);
@@ -174,6 +167,10 @@ public class AccountCommandService {
         Account account = accountQueryService.findAccountById(accountId);
         String profileUrl = s3Service.upLoadCv(file);
         account.setProfileCvUrl(profileUrl);
+        if(account.getAccountRole() == AccountRole.TEACHER || account.getApplicationStatus()==ApplicationStatus.REJECT){
+            account.setApplicationStatus(ApplicationStatus.RE_SUBMIT);
+            accountRepo.save(account);
+        }
         accountRepo.save(account);
         return modelMapper.map(account,AccountResponse.class);
     }
@@ -187,8 +184,5 @@ public class AccountCommandService {
             throw new RuntimeException(e);
         }
     }
-
-
-
 
 }

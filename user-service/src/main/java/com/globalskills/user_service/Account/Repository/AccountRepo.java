@@ -1,9 +1,10 @@
 package com.globalskills.user_service.Account.Repository;
 
 import com.globalskills.user_service.Account.Entity.Account;
+import com.globalskills.user_service.Account.Enum.AccountRole;
+import com.globalskills.user_service.Account.Enum.ApplicationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +16,9 @@ public interface AccountRepo extends JpaRepository<Account,Long> {
     boolean existsByEmailOrUsername(String email, String username);
     Optional<Account> findByEmail(String email);
 
-    Page<Account> findAllByIsActive(Pageable pageable,boolean isActive);
+    Page<Account> findAllByAccountRoleNot(PageRequest pageRequest, AccountRole accountRole);
 
-    Page<Account> findByProfileCvUrlIsNotNull(PageRequest pageRequest);
+    Page<Account> findAllByIsActiveAndAccountRoleNot(PageRequest pageRequest, Boolean isActive, AccountRole accountRole);
+
+    Page<Account> findByProfileCvUrlIsNotNullAndApplicationStatus(PageRequest pageRequest, ApplicationStatus applicationStatus);
 }

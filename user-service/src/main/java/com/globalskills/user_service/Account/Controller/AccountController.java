@@ -1,7 +1,7 @@
 package com.globalskills.user_service.Account.Controller;
 
 import com.globalskills.user_service.Account.Dto.*;
-import com.globalskills.user_service.Account.Entity.Account;
+import com.globalskills.user_service.Account.Enum.ApplicationStatus;
 import com.globalskills.user_service.Account.Service.AccountCommandService;
 import com.globalskills.user_service.Account.Service.AccountQueryService;
 import com.globalskills.user_service.Account.Service.DashboardService;
@@ -37,12 +37,6 @@ public class AccountController {
     @Autowired
     ModelMapper modelMapper;
 
-//    public ResponseEntity<?> save(Account account){
-//        AccountResponse newAccount = accountCommandService.save(account);
-//        BaseResponseAPI<AccountResponse> responseAPI = new BaseResponseAPI<>(true,"Create account successfully",newAccount,null);
-//        return ResponseEntity.ok(responseAPI);
-//    }
-
     @GetMapping("/dashboard/user-count-by-role")
     public ResponseEntity<?> getUserCountByRole(){
         List<CountUserResponse> responses = dashboardService.getUserCountByRole();
@@ -67,16 +61,6 @@ public class AccountController {
         BaseResponseAPI<?> responseAPI = new BaseResponseAPI<>(true,"Change password successfully",null,null);
         return ResponseEntity.ok(responseAPI);
     }
-
-
-    @PutMapping("/me/role-teacher")
-    public ResponseEntity<?> updateRole( @Parameter(hidden = true)
-                                         @RequestHeader(value = "X-User-ID",required = false) Long currentAccountId){
-        AccountResponse response = accountCommandService.updateRole(currentAccountId);
-        BaseResponseAPI<AccountResponse> responseAPI = new BaseResponseAPI<>(true,"Update account role to TEACHER successfully",response,null);
-        return ResponseEntity.ok(responseAPI);
-    }
-
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody AccountRequest request){
@@ -145,6 +129,10 @@ public class AccountController {
         return ResponseEntity.ok(responseAPI);
     }
 
+
+
+    //=============CV FLOW =================//
+
     @PutMapping("/approvedCv")
     public ResponseEntity<?> approvedCv(@RequestBody CvListApproved listApproved){
         boolean response = accountCommandService.approvedCv(listApproved);
@@ -174,10 +162,11 @@ public class AccountController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDir
-    ){
-        PageResponse<AccountResponse> pageResponse = accountQueryService.getListAccountApproveCV(page, size, sortBy, sortDir);
-        BaseResponseAPI<PageResponse<AccountResponse>> responseAPI = new BaseResponseAPI<>(true,"Get list account cv successfully",pageResponse,null);
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(defaultValue = "PENDING")ApplicationStatus applicationStatus
+            ){
+        PageResponse<AccountResponse> pageResponse = accountQueryService.getAccountsByCvApplicationStatus(page, size, sortBy, sortDir,applicationStatus);
+        BaseResponseAPI<PageResponse<AccountResponse>> responseAPI = new BaseResponseAPI<>(true,"Get list account cv status : "+applicationStatus+" successfully",pageResponse,null);
         return ResponseEntity.ok(responseAPI);
     }
 

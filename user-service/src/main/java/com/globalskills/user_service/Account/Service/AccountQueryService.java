@@ -2,6 +2,8 @@ package com.globalskills.user_service.Account.Service;
 
 import com.globalskills.user_service.Account.Dto.AccountResponse;
 import com.globalskills.user_service.Account.Entity.Account;
+import com.globalskills.user_service.Account.Enum.AccountRole;
+import com.globalskills.user_service.Account.Enum.ApplicationStatus;
 import com.globalskills.user_service.Account.Exception.AccountException;
 import com.globalskills.user_service.Account.Repository.AccountRepo;
 import com.globalskills.user_service.Common.Dto.PageResponse;
@@ -13,7 +15,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -66,6 +70,7 @@ public class AccountQueryService{
         return modelMapper.map(account,AccountResponse.class);
     }
 
+    @Transactional(readOnly = true)
     public PageResponse<AccountResponse> getListAccount(
             int page,
             int size,
@@ -75,11 +80,12 @@ public class AccountQueryService{
     ) {
         Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
         Page<Account> accountPage = (isActive == null)
-                ? accountRepo.findAll(pageRequest)
-                : accountRepo.findAllByIsActive(pageRequest, isActive);
+                ? accountRepo.findAllByAccountRoleNot(pageRequest,AccountRole.ADMIN)
+                : accountRepo.findAllByIsActiveAndAccountRoleNot(pageRequest, isActive,AccountRole.ADMIN);
         if (accountPage.isEmpty()) {
-            return null;
+            return new PageResponse<>(Collections.emptyList(),page,size,0,0,true);
         }
 
         List<AccountResponse> responses = accountPage
@@ -97,17 +103,21 @@ public class AccountQueryService{
         );
     }
 
-    public PageResponse<AccountResponse> getListAccountApproveCV(
+    @Transactional(readOnly = true)
+    public PageResponse<AccountResponse> getAccountsByCvApplicationStatus(
             int page,
             int size,
             String sortBy,
-            String sortDir
+            String sortDir,
+            ApplicationStatus applicationStatus
     ){
         Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Page<Account> accountPage = accountRepo.findByProfileCvUrlIsNotNull(pageRequest);
+
+        Page<Account> accountPage = accountRepo.findByProfileCvUrlIsNotNullAndApplicationStatus(pageRequest,applicationStatus);
+
         if(accountPage.isEmpty()){
-            return null;
+            return new PageResponse<>(Collections.emptyList(),page,size,0,0,true);
         }
         List<AccountResponse> responses = accountPage
                 .stream()
@@ -122,4 +132,10 @@ public class AccountQueryService{
                 accountPage.isLast()
         );
     }
+
+    public boolean isRoleTeacher(Long id){
+        Account account = findAccountById(id);
+        return account.getAccountRole() == AccountRole.TEACHER;
+    }
+
 }
