@@ -24,18 +24,14 @@ public class ChatBoxController {
     @Autowired
     ChatService chatService;
 
-    @Autowired
-    SimpMessagingTemplate simpMessagingTemplate;
 
     @PostMapping("/message")
     public ResponseEntity<?> sendMessage(@Parameter(hidden = true)
                                          @RequestHeader(value = "X-User-ID",required = false)
                                          Long senderId,
                                          @RequestBody SendMessageRequest request){
-        String receiver = String.valueOf(request.getRecipientId());
         ChatResponse response = chatService.sendMessage(senderId, request);
         BaseResponseAPI<ChatResponse> responseAPI = new BaseResponseAPI<>(true,"Send message successfully",response,null);
-        simpMessagingTemplate.convertAndSendToUser(receiver,"/queue/private",request.getContent());
         return ResponseEntity.ok(responseAPI);
     }
 

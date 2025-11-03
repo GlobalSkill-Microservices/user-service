@@ -14,6 +14,7 @@ import com.globalskills.user_service.ChatBox.Exception.ConversationException;
 import com.globalskills.user_service.ChatBox.Repository.ConversationMGRepo;
 import com.globalskills.user_service.ChatBox.Repository.MessageMGRepo;
 import com.globalskills.user_service.Common.Dto.PageResponse;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ public class ChatService {
 
     @Autowired
     ConversationMGRepo conversationMGRepo;
+
+    @Autowired
+    SimpMessagingTemplate simpMessagingTemplate;
 
     public ChatResponse sendMessage(Long senderId, SendMessageRequest request) {
 
@@ -80,7 +84,27 @@ public class ChatService {
 
         updateConversationLastMessage(conversation, message);
 
-        //websocket
+        String topicDestination = "/topic/conversation/" + conversation.getId();
+        simpMessagingTemplate.convertAndSend(topicDestination, message);
+
+        String privateDestination = "/queue/private";
+
+        final Long finalSenderId = senderId;
+
+        conversation.getParticipants().stream()
+                .filter(participant -> !participant.getId().equals(finalSenderId))
+                .forEach(recipient -> {
+
+
+                    String recipientIdString = String.valueOf(recipient.getId());
+
+                    simpMessagingTemplate.convertAndSendToUser(
+                            recipientIdString,
+                            privateDestination,
+                            message
+                    );
+                });
+
         return new ChatResponse(message, conversation);
     }
 
