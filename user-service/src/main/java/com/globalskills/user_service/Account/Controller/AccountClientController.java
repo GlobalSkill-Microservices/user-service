@@ -1,7 +1,6 @@
 package com.globalskills.user_service.Account.Controller;
 
 import com.globalskills.user_service.Account.Dto.AccountDto;
-import com.globalskills.user_service.Account.Dto.AccountResponse;
 import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Enum.ApplicationStatus;
 import com.globalskills.user_service.Account.Service.AccountQueryService;

@@ -11,6 +11,22 @@ spring:
     password: ${AIVEN_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+    hikari:
+      pool-name: PaymentServicePool
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000         # 30 giây
+      max-lifetime: 3300000       # 55 phút (an toàn cho DB auto-close 1h)
+      connection-timeout: 20000   # 20 giây
+      auto-commit: true
+      transaction-isolation: TRANSACTION_READ_COMMITTED
+
+
+  data:
+    mongodb:
+      uri: mongodb+srv://quanonepunch_db_user:${MONGO_DB_PASSWORD}@chatbox.v1zurl2.mongodb.net/exe201?retryWrites=true&w=majority&appName=chatbox
+
+
   jpa:
     properties:
       hibernate:
