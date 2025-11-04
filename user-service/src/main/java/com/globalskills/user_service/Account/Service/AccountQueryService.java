@@ -1,6 +1,8 @@
 package com.globalskills.user_service.Account.Service;
 
+import com.globalskills.user_service.Account.Dto.AccountDto;
 import com.globalskills.user_service.Account.Dto.AccountResponse;
+import com.globalskills.user_service.Account.Dto.MentorResponse;
 import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Enum.AccountRole;
 import com.globalskills.user_service.Account.Enum.ApplicationStatus;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AccountQueryService{
@@ -133,9 +136,60 @@ public class AccountQueryService{
         );
     }
 
+    public PageResponse<MentorResponse> getMentor(
+            int page,
+            int size,
+            String sortBy,
+            String sortDir,
+            String language
+    ) {
+        Sort.Direction direction = sortDir.equalsIgnoreCase("desc")
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
+        Page<Account> accountPage;
+
+        if (language == null || language.isBlank()) {
+            accountPage = accountRepo.findAll(pageRequest);
+        }
+        else {
+            accountPage = accountRepo.findByLanguageName(language, pageRequest);
+        }
+
+        List<Account> mentorAccounts = accountPage.getContent().stream()
+                .filter(acc -> isRoleTeacher(acc.getId()))
+                .toList();
+
+        List<AccountDto> mentorDtos = mentorAccounts.stream()
+                .map(acc -> {
+                    Account account = findAccountById(acc.getId());
+                    return modelMapper.map(account, AccountDto.class);
+                })
+                .toList();
+
+        String groupName = (language == null || language.isBlank()) ? "All Languages" : language;
+        Map<String, List<AccountDto>> grouped = Map.of(groupName, mentorDtos);
+
+        List<MentorResponse> mentorResponses = grouped.entrySet().stream()
+                .map(entry -> new MentorResponse(entry.getKey(), entry.getValue()))
+                .toList();
+
+        return new PageResponse<>(
+                mentorResponses,
+                page,
+                size,
+                accountPage.getTotalElements(),
+                accountPage.getTotalPages(),
+                accountPage.isLast()
+        );
+    }
+
+
+
     public boolean isRoleTeacher(Long id){
         Account account = findAccountById(id);
-        return account.getAccountRole() == AccountRole.TEACHER;
+        return account.getAccountRole() == AccountRole.TEACHER && account.getApplicationStatus() == ApplicationStatus.APPROVED;
     }
 
 }

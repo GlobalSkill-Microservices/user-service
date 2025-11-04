@@ -1,10 +1,12 @@
 package com.globalskills.user_service.Account.Controller;
 
 import com.globalskills.user_service.Account.Dto.*;
+import com.globalskills.user_service.Account.Entity.Language;
 import com.globalskills.user_service.Account.Enum.ApplicationStatus;
 import com.globalskills.user_service.Account.Service.AccountCommandService;
 import com.globalskills.user_service.Account.Service.AccountQueryService;
 import com.globalskills.user_service.Account.Service.DashboardService;
+import com.globalskills.user_service.Account.Service.LanguageQueryService;
 import com.globalskills.user_service.Authentication.Dto.ResetPasswordRequest;
 import com.globalskills.user_service.Common.Dto.BaseResponseAPI;
 import com.globalskills.user_service.Common.Dto.PageResponse;
@@ -33,6 +35,9 @@ public class AccountController {
 
     @Autowired
     DashboardService dashboardService;
+
+    @Autowired
+    LanguageQueryService languageQueryService;
 
     @Autowired
     ModelMapper modelMapper;
@@ -126,6 +131,26 @@ public class AccountController {
     ){
         PageResponse<AccountResponse> pageResponse = accountQueryService.getListAccount(page, size, sortBy, sortDir, isActive);
         BaseResponseAPI<PageResponse<AccountResponse>> responseAPI = new BaseResponseAPI<>(true,"Get list account successfully",pageResponse,null);
+        return ResponseEntity.ok(responseAPI);
+    }
+
+    @GetMapping("/languages")
+    public ResponseEntity<?> getAllLanguage(){
+        List<Language> languages = languageQueryService.getAll();
+        BaseResponseAPI<List<Language>> responseAPI = new BaseResponseAPI<>(true,"Get list language successfully",languages,null);
+        return ResponseEntity.ok(responseAPI);
+    }
+
+    @GetMapping("/mentors")
+    public ResponseEntity<?> getMentor(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) String language
+    ){
+        PageResponse<MentorResponse> pageResponse = accountQueryService.getMentor(page, size, sortBy, sortDir, language);
+        BaseResponseAPI<PageResponse<MentorResponse>> responseAPI = new BaseResponseAPI<>(true,"Get list mentor successfully",pageResponse,null);
         return ResponseEntity.ok(responseAPI);
     }
 
