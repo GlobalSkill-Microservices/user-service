@@ -28,4 +28,8 @@ public interface AccountRepo extends JpaRepository<Account,Long> {
     @Query("SELECT a FROM Account a JOIN a.mentoringLanguages l WHERE l.name = :language")
     Page<Account> findByLanguageName(@Param("language") String language, PageRequest pageRequest);
 
+    @Query("SELECT DISTINCT a FROM Account a JOIN a.mentoringLanguages l")
+    Page<Account> findAllWithLanguages(PageRequest pageRequest);
+
+
 }

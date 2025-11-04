@@ -151,7 +151,7 @@ public class AccountQueryService{
         Page<Account> accountPage;
 
         if (language == null || language.isBlank()) {
-            accountPage = accountRepo.findAll(pageRequest);
+            accountPage = accountRepo.findAllWithLanguages(pageRequest);
         }
         else {
             accountPage = accountRepo.findByLanguageName(language, pageRequest);
