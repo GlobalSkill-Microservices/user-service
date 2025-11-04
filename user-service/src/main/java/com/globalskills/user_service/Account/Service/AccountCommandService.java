@@ -185,4 +185,10 @@ public class AccountCommandService {
         }
     }
 
+    public void updateStatusCv(Long accountId){
+        Account account = accountQueryService.findAccountById(accountId);
+        account.setApplicationStatus(ApplicationStatus.PENDING);
+        accountRepo.save(account);
+    }
+
 }

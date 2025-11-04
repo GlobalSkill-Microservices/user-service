@@ -3,6 +3,7 @@ package com.globalskills.user_service.Account.Controller;
 import com.globalskills.user_service.Account.Dto.AccountDto;
 import com.globalskills.user_service.Account.Entity.Account;
 import com.globalskills.user_service.Account.Enum.ApplicationStatus;
+import com.globalskills.user_service.Account.Service.AccountCommandService;
 import com.globalskills.user_service.Account.Service.AccountQueryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
@@ -21,13 +22,15 @@ public class AccountClientController {
     AccountQueryService accountQueryService;
 
     @Autowired
+    AccountCommandService accountCommandService;
+
+    @Autowired
     ModelMapper modelMapper;
 
 
     @PutMapping("/Cv-status/user/{id}")
     public ResponseEntity<?> updateApplicationStatus(@PathVariable Long id){
-        Account account = accountQueryService.findAccountById(id);
-        account.setApplicationStatus(ApplicationStatus.PENDING);
+        accountCommandService.updateStatusCv(id);
         return ResponseEntity.ok("Update Cv status pending successfully");
 
     }
