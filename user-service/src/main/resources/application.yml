@@ -5,6 +5,9 @@ spring:
   application:
     name: user-service
 
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+
   datasource:
     url: jdbc:mysql://globalskill-globalskill.e.aivencloud.com:23246/user-service?ssl-mode=REQUIRED
     username: avnadmin

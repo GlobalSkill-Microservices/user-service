@@ -7,6 +7,7 @@ import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import java.security.Principal;
 import java.util.Map;
+import java.util.UUID;
 
 public class CustomHandshakeHandler extends DefaultHandshakeHandler {
 
@@ -15,16 +16,33 @@ public class CustomHandshakeHandler extends DefaultHandshakeHandler {
                                       WebSocketHandler wsHandler,
                                       Map<String, Object> attributes) {
 
-        if (request instanceof ServletServerHttpRequest servletRequest) {
-            var httpRequest = servletRequest.getServletRequest();
-            String userId = httpRequest.getHeader("X-User-Id");
+        String userId = null;
 
-            if (userId == null || userId.isEmpty()) {
-                userId = "anonymous-" + System.currentTimeMillis();
+        try {
+            if (request instanceof ServletServerHttpRequest servletRequest) {
+                var httpRequest = servletRequest.getServletRequest();
+
+                userId = httpRequest.getHeader("X-USER-ID");
+
+                System.out.println("=== WebSocket Handshake ===");
+                System.out.println("X-USER-ID: " + userId);
+                System.out.println("==========================");
+
+                if (userId == null || userId.isEmpty()) {
+                    userId = "anonymous-" + UUID.randomUUID().toString().substring(0, 8);
+                    System.out.println("⚠️ No X-USER-ID, using: " + userId);
+                }
+            } else {
+                userId = "anonymous-" + UUID.randomUUID().toString().substring(0, 8);
             }
-            String finalUserId = userId;
-            return () -> finalUserId;
+
+        } catch (Exception e) {
+            System.err.println("❌ Error in determineUser: " + e.getMessage());
+            e.printStackTrace();
+            userId = "anonymous-error-" + UUID.randomUUID().toString().substring(0, 8);
         }
-        return () -> "anonymous";
+
+        final String finalUserId = userId;
+        return () -> finalUserId;
     }
 }
